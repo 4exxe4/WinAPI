@@ -19,7 +19,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 	);
 	//MB_ - MessageBox;
 	*/
-	DialogBoxParam(hInstance, MAKEINTRESOURCE (IDD_DIALOG1), NULL, (DLGPROC)DlgProc, 0);
+	DialogBoxParam(hInstance, MAKEINTRESOURCE (IDD_DIALOG_MAIN), NULL, (DLGPROC)DlgProc, 0);
 	return 0;
 }
 BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
