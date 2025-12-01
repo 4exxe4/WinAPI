@@ -45,10 +45,29 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			INT i = SendMessage(hListBox, LB_GETCURSEL, 0, 0);
 			SendMessage(hListBox, LB_DELETESTRING, i, 0);
 		}
-			break;
 		}
+		break;
+	case IDOK:
+		break;
+	case IDCANCEL:
+		EndDialog(hwnd, 0);
 	}
 	break;
+	case WM_KEYUP:
+	{
+		switch (wParam)
+		{
+		case VK_SPACE:
+		{
+			MessageBox(hwnd, "Enter pressed", "Info", MB_OK | MB_ICONINFORMATION);
+			HWND hList = GetDlgItem(hwnd, IDC_LIST1);
+			if (GetFocus() == hList)
+			{
+				DialogBoxParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOG_ADD), hwnd, (DLGPROC)DlgProcEdit, 0);
+			}
+		}
+		}
+	}
 	case WM_CLOSE:
 		EndDialog(hwnd, 0);
 	}
