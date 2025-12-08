@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{75d8a763-e50f-42aa-bd82-f65549aa5f3c}</ProjectGuid>
-    <RootNamespace>MainWindow</RootNamespace>
+    <ProjectGuid>{95d2ab0f-6f95-4b7d-83a3-221e7f03163e}</ProjectGuid>
+    <RootNamespace>Calc</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -123,20 +123,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="mainwindow.cpp" />
+    <ClCompile Include="calc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="MainWindow.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\WinAPI\bitcoin_logo_icon_170476.ico" />
-    <Image Include="palm.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\winapi\cursor1.cur" />
+    <ResourceCompile Include="Resource.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

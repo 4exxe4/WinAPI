@@ -1,5 +1,8 @@
 #include <Windows.h>
+#include <cstdio>
 #include "resource.h"
+
+#define IDC_BUTTON 1000
 
 CONST CHAR g_sz_WINDOW_CLASS[] = "My first window";
 
@@ -49,14 +52,19 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 	}
 
 	//2) Создание окна:
-	
+	int screen_width = GetSystemMetrics(SM_CXSCREEN);
+	int screen_height = GetSystemMetrics(SM_CYSCREEN);
+	int window_width = screen_width * 3 / 4;
+	int window_height = screen_height * 3 / 4;
+	int x_position = screen_width / 8;
+	int y_position = screen_height / 8;
 	HWND hwnd = CreateWindowEx(
 		NULL, //exStyle 
 		g_sz_WINDOW_CLASS, // Иия класса окна
 		g_sz_WINDOW_CLASS, // Заголовок окна
 		WS_OVERLAPPEDWINDOW, // Стиль окна
-		CW_USEDEFAULT, CW_USEDEFAULT, // Position
-		640, 480, //Размер окна
+		x_position, y_position, // Position
+		window_width, window_height, //Размер окна
 		NULL, 
 		NULL, // Для главного окна это ResourceID главное меню,
 		      // Для дочернего окна (Control) - ResourceID дочернего окна
@@ -87,9 +95,49 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	switch (uMsg)
 	{
 	case WM_CREATE:
+	{
+		HWND hButton = CreateWindowEx
+		(
+			NULL,
+			"Button",
+			"Кнопка",
+			WS_CHILD | WS_VISIBLE,
+			10, 10,
+			150, 80,
+			hwnd,
+			(HMENU)IDC_BUTTON,
+			GetModuleHandle(NULL),
+			NULL
+		);
+	}
+		break;
+	case WM_MOVE:
+	case WM_SIZE:
+	{
+		RECT window_rect = {};
+		GetWindowRect(hwnd, &window_rect);
+		CONST INT SIZE = 256;
+		CHAR sz_title[SIZE] = {};
+		wsprintf
+		(
+			sz_title,
+			"%s, Position: %ix%i, Size: %ix%i",
+			g_sz_WINDOW_CLASS,
+			window_rect.left, window_rect.top,
+			window_rect.right - window_rect.left,
+			window_rect.bottom - window_rect.top
+		);
+		SendMessage(hwnd, WM_SETTEXT, 0, (LPARAM)sz_title);
+	}
+	case WM_COMMAND:
+	{
+		switch (LOWORD(wParam))
+		{
+		case IDC_BUTTON:
 		MessageBox(hwnd, "Cursor check", "Info", MB_OK | MB_ICONINFORMATION);
 		break;
-	case WM_COMMAND:
+		}
+	}
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
