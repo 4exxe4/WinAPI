@@ -204,6 +204,13 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	break;
 	case WM_COMMAND:
 	{
+		static double a = DBL_MIN, b = DBL_MIN; //Операнды
+		static INT operation = 0;
+		static BOOL input = FALSE;
+		static BOOL input_operation = FALSE;
+
+
+		SetFocus(hwnd);
 		HWND hEdit = GetDlgItem(hwnd, IDC_DISPLAY);
 		CONST INT SIZE = 256;
 		CHAR sz_buffer[SIZE] = {};
@@ -211,6 +218,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		SendMessage(hEdit, WM_GETTEXT, SIZE, (LPARAM)sz_buffer);
 		if (LOWORD(wParam) >= IDC_BUTTON_0 && LOWORD(wParam) <= IDC_BUTTON_9)
 		{
+			if (input_operation)
+			{
+				//SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)"");
+				sz_buffer[0] = 0;
+				input_operation = FALSE;
+			}
 			sz_digit[0] = LOWORD(wParam) - IDC_BUTTON_0 + '0';
 			if (strcmp(sz_buffer, "0") == 0)strcpy(sz_buffer, sz_digit);
 			else	strcat(sz_buffer, sz_digit);
@@ -220,6 +233,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			//dst - Destination (Строка получатель)
 			//src - Source (Строка источник)
 			SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)sz_buffer);
+			input = TRUE;
+			input_operation = FALSE;
 		}
 		if (LOWORD(wParam) == IDC_BUTTON_POINT)
 		{
@@ -234,7 +249,41 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 		if (LOWORD(wParam) == IDC_BUTTON_CLR)
 		{
+			a = b = DBL_MIN;
+			operation = 0;
+			input = input_operation = FALSE;
 			SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)"0");
+		}
+		if (LOWORD(wParam) >= IDC_BUTTON_PLUS && LOWORD(wParam) <= IDC_BUTTON_SLASH)
+		{
+			if (input)
+			{
+				if (a == DBL_MIN) a = atof(sz_buffer); //ANSI/ASCII
+				else b = atof(sz_buffer);
+				input = FALSE;
+				SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_EQUAL), 0);
+			}
+			operation = LOWORD(wParam);
+			input_operation = TRUE;
+		}
+		if (LOWORD(wParam) == IDC_BUTTON_EQUAL)
+		{
+			if (input)
+			{
+				if (a == DBL_MIN)a = atof(sz_buffer);
+				else b = atof(sz_buffer);
+				input = FALSE;
+			}
+			switch (operation)
+			{
+			case IDC_BUTTON_PLUS:   a += b; break;
+			case IDC_BUTTON_MINUS:  a -= b; break;
+			case IDC_BUTTON_ASTER:  a *= b; break;
+			case IDC_BUTTON_SLASH:  a /= b; break;
+			}
+			input_operation = FALSE;
+			sprintf(sz_buffer, "%g", a);
+			SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)sz_buffer);
 		}
 	}
 	break;
